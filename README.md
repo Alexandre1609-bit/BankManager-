@@ -73,7 +73,7 @@ python -m pytest
 
 ```text
 .
-├── .github/workflows/   # 🤖 Configuration CI/CD (GitHub Actions)
+├── .github/workflows/   # Configuration CI/CD (GitHub Actions)
 ├── src/
 │   ├── compte.py        # Logique Métier + ORM (Lien SQL)
 │   ├── server_tcp.py    # Serveur (Sockets & Parsing)
