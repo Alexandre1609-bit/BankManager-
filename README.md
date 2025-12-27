@@ -1,52 +1,86 @@
-# Bank Account Manager
+# BankManager (v2.0)
 
-Un projet Python simple démontrant l'application des principes de Clean Code, de la POO et des Tests Unitaires.
+Une application bancaire implémentant une architecture Client-Serveur, la Persistance des données et une chaîne CI.
 
-## Objectifs du projet
+Ce projet démontre l'application des principes Clean Code, SOLID et des standards DevOps.
 
-Ce projet est une simple simulation bancaire, visant à apprendre à implémenter des standards professionnels de développement :
+## Fonctionnalités Clés
 
-* **Encapsulation stricte** : Usage d'attributs privés et de décorateurs `@property`.
-* **Défense en profondeur** : Utilisation de "Guard Clauses" pour la validation des données.
-* **Principe DRY** (Don't Repeat Yourself) : Réutilisation de logique pour les virements.
-* **Tests Automatisés** : Couverture de tests avec `pytest` et usage de *fixtures*.
-* **Type Hinting** : Typage statique pour la robustesse du code.
+### Architecture Technique
+* **Architecture 3-Tiers** : Séparation claire entre Client, Serveur et Données.
+* **Réseau TCP** : Communication via Sockets bruts (sans framework) pour comprendre les fondations du web.
+* **Persistance SQL** : Stockage durable via SQLite (l'argent survit au redémarrage).
+* **Protocole Custom** : Parsing manuel des commandes (`DEPOSER`, `RETIRER`, `SOLDE`).
 
-## Installation et Utilisation
+### Qualité & DevOps
+* **CI Pipeline** : Tests automatiques lancés par GitHub Actions à chaque push.
+* **Tests Unitaires** : Utilisation de `pytest` avec Fixtures pour simuler la base de données.
+* **Clean Code** : Guard Clauses, Type Hinting, et Pattern Active Record simplifié.
 
-1.  **Cloner le projet**
-    ```bash
-    git clone (https://github.com/Alexandre1609-bit/BankManager-.git)
-    cd BankManager
-    ```
+## Installation et Démarrage
 
-2.  **Lancer les tests (Recommandé)**
-    Le projet contient une suite de tests complète.
-    ```bash
-    # Installer pytest si nécessaire
-    pip install pytest
+### 1. Pré-requis
+Cloner le projet et installer les dépendances de test :
 
-    # Lancer les tests
-    python -m pytest
-    ```
+```bash
+git clone (https://github.com/Alexandre1609-bit/BankManager-.git)
+cd BankManager
+pip install pytest
+```
 
-## Structure du code
+### 2. Initialiser la Base de Données (Une seule fois)
 
-* `compte.py` : La classe métier contenant la logique (Dépôt, Retrait, Virement).
-* `tests/` : Dossier contenant les tests unitaires.
+Avant de lancer le serveur, il faut créer le fichier de stockage `bank.db` :
 
-## Exemple d'usage
+```bash
+python src/init_db.py
+# Output: Base de données initialisée.
+```
 
-```python
-from compte import CompteBancaire
+### 3. Lancer le Serveur (Terminal 1)
 
-# Création
-paul = CompteBancaire("Paul")
-paul.deposer(100)
+Le serveur écoute sur le port `65432` et gère les transactions.
 
-# Virement sécurisé
-pierre = CompteBancaire("Pierre")
-paul.virement(pierre, 30)
+```bash
+python src/server_tcp.py
+# En attente de connexion...
+```
 
-print(paul) # "Compte de Paul. Solde : 70.0"
+### 4. Lancer le Client (Terminal 2)
+
+Ouvrez un nouveau terminal pour interagir avec votre banque.
+
+```bash
+python src/client_tcp.py
+```
+
+**Commandes disponibles dans le terminal bancaire :**
+
+* `solde` : Affiche votre solde actuel.
+* `deposer 50` : Dépose 50€.
+* `retirer 20` : Retire 20€.
+* `quit` : Quitter.
+
+## Tests Automatisés
+
+Le projet contient une suite de tests qui vérifie la logique métier et la persistance des données sans corrompre la vraie base (grâce aux Fixtures).
+
+```bash
+python -m pytest
+```
+
+## Structure du Projet
+
+```text
+.
+├── .github/workflows/   # 🤖 Configuration CI/CD (GitHub Actions)
+├── src/
+│   ├── compte.py        # Logique Métier + ORM (Lien SQL)
+│   ├── server_tcp.py    # Serveur (Sockets & Parsing)
+│   ├── client_tcp.py    # Client (Interface Console)
+│   └── init_db.py       # Script d'initialisation BDD
+├── tests/
+│   └── test_compte.py   # Tests avec Fixtures SQLite
+└── README.md
+
 ```
