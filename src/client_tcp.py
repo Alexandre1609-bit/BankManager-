@@ -3,14 +3,23 @@ import socket
 HOST = "127.0.0.1"
 PORT = 65432
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-    print(f"Tentative de connexion à {HOST}:{PORT}")
 
-    client.connect((HOST, PORT))
+print("### TERMINAL BANCAIRE ###")
+print("Commande : solde | deposer X | retiquer X | quit")
 
-    message = b"solde"
-    client.sendall(message)
+while True:
 
-    data = client.recv(1024)
+    commande = input("Banque > ")
 
-    print(f"Réponse reçu du serveur : {data.decode('utf-8')}")
+    if commande == "quit":
+        break
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
+        client.connect((HOST, PORT))
+        client.sendall(commande.encode('utf-8'))
+
+
+        data = client.recv(1024)
+        print(f"Réponse reçu du serveur : {data.decode('utf-8')}")
+
+print("Fermeture du terminal.")
